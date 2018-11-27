@@ -32,24 +32,6 @@ def is_square(x):
 def make_vec(x):
     return x.reshape((-1, ))
 
-def convolve(input_layer, kernel, stride, padding, bias):
-    s = int(input_layer.shape[0] + 2*padding)
-    padding = int(padding)
-    mat = np.zeros((s, s))
-    k = kernel.shape[0]
-    if padding > 0:
-        mat[padding:-padding, padding:-padding] = input_layer
-    else:
-        mat = input_layer
-    output_dim = int((mat.shape[0] - kernel.shape[0])/stride + 1)
-    output = np.zeros((output_dim, output_dim))
-    for i in range(output_dim):
-        i_idx = stride * i
-        for j in range(output_dim):
-            j_idx = stride * j
-            output[i, j] = np.sum(np.multiply(mat[i_idx:i_idx+k, j_idx:j_idx+k], kernel)) + bias
-    return output
-
 def xavier(dims):
     return np.random.randn(dims[0], dims[1])/np.sqrt(dims[0]/2)
 
@@ -150,9 +132,12 @@ class fully_connected_layer:
         self.b -= self.vb
         self.grad_w = np.zeros_like(self.grad_w)
         self.grad_b = np.zeros_like(self.grad_b)
-        
-class convolutional_layer:
     
+# THIS IS UNFINISHED
+class convolutional_layer:
+    """
+    UNFINISHED
+    """
     def __init__(self, input_size, stride, kernel_size, a_fn, a_prime_fn,
                  final=False, padding='SAME'):
         self.p = (kernel_size-1)/2
@@ -421,20 +406,14 @@ for data in [train_x, test_x]:
 nn = neural_net(train_x, train_y, test_x, test_y, init_type='random',
                 losstype='acc')
 
-#nn.add_layer(fully_connected_layer((64, 28*28), ReLU, ReLU_prime))
-nn.add_layer(convolutional_layer(28, 1, 3, ReLU, ReLU_prime))
-#nn.add_layer(fully_connected_layer((128, 256), ReLU, ReLU_prime))
-#nn.add_layer(fully_connected_layer((128, 128), ReLU, ReLU_prime))
-#nn.add_layer(fully_connected_layer((64, 128), ReLU, ReLU_prime))
-#nn.add_layer(fully_connected_layer((64, 64), ReLU, ReLU_prime))
-#nn.add_layer(fully_connected_layer((32, 64), ReLU, ReLU_prime))
-nn.add_layer(fully_connected_layer((16, 28*28), ReLU, ReLU_prime))
+nn.add_layer(fully_connected_layer((64, 28*28), ReLU, ReLU_prime))
+nn.add_layer(fully_connected_layer((64, 64), ReLU, ReLU_prime))
+nn.add_layer(fully_connected_layer((32, 64), ReLU, ReLU_prime))
+nn.add_layer(fully_connected_layer((16, 32), ReLU, ReLU_prime))
 nn.add_layer(fully_connected_layer((10, 16), softmax, None))
    
 nn.train(epochs=5, batch_size=32, lr=1e-3)
 nn.plot()
-#print('Image of 5 classified as:', nn.classify('five.tiff'))
-#print('Image of 8 classified as:', nn.classify('eight.tiff'))
 
 def classify(nn, imgpath=None, img=None):
     try:
