@@ -8,6 +8,7 @@ import sys
 from copy import deepcopy
 import time
 
+
 class Timer:
     def __enter__(self):
         self.start = time.time()
