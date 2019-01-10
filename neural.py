@@ -1,3 +1,9 @@
+"""
+@author     Jack Scantlebury
+@created    03/09/2018
+@brief      Manual implementation of neural network and layer classes
+"""
+
 from tensorflow.examples.tutorials.mnist import input_data
 from matplotlib import pyplot as plt
 import matplotlib.image as mpimg
