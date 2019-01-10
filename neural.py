@@ -373,9 +373,11 @@ class neural_net:
             plt.ylim([0, 100])
         else:
             plt.ylim([0, 1.5])
-        plt.ylabel('Accuracy (%)')
+        ylab = 'Accuracy (%)' if self.losstype=='acc' else 'Cross entropy loss ' + r'(-$\Sigma_i p_i \ln{q_i}$)'
+        plt.ylabel(ylab)
         plt.xlabel('Data processed')
-        plt.title('Test and training accuracy on MNIST')
+        title = 'Test and training accuracy on MNIST' if self.losstype == 'acc' else 'Test and training loss on MNIST'
+        plt.title(title)
         plt.legend({'Training', 'Testing'})
             
     def plot_update(self):
@@ -405,7 +407,7 @@ for data in [train_x, test_x]:
         data[i, :] -= mean_img
 
 nn = neural_net(train_x, train_y, test_x, test_y, init_type='random',
-                losstype='acc')
+                losstype='loss')
 
 nn.add_layer(fully_connected_layer((64, 28*28), ReLU, ReLU_prime))
 nn.add_layer(fully_connected_layer((64, 64), ReLU, ReLU_prime))
@@ -413,7 +415,7 @@ nn.add_layer(fully_connected_layer((32, 64), ReLU, ReLU_prime))
 nn.add_layer(fully_connected_layer((16, 32), ReLU, ReLU_prime))
 nn.add_layer(fully_connected_layer((10, 16), softmax, None))
    
-nn.train(epochs=5, batch_size=32, lr=1e-3)
+nn.train(epochs=10, batch_size=32, lr=1e-3)
 nn.plot()
 
 def classify(nn, imgpath=None, img=None):
