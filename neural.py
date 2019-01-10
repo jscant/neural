@@ -515,7 +515,7 @@ for data in [train_x, test_x]:
         data[i, :] -= mean_img
 
 nn = neural_net(train_x, train_y, test_x, test_y, init_type='random',
-                losstype='loss')
+                losstype='acc')
 
 nn.add_layer(fully_connected_layer((64, 28*28), ReLU, ReLU_prime))
 nn.add_layer(fully_connected_layer((64, 64), ReLU, ReLU_prime))
