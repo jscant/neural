@@ -352,11 +352,17 @@ class neural_net:
                     percent = 100*self.processed_data/self.train_x.shape[0]/epochs
                     trained_str = str(self.processed_data)
                     percent_str = str(percent).split('.')[0] + '%'
-                    sys.stdout.write(
-                        "\rTraining: " + percent_str +
+                    if self.losstype == 'acc':
+                        total_str = ("\rTraining: " + percent_str +
                         ", training samples processed: " + trained_str +
                         ", training accuracy: " + train_acc + 
                         ", testing accuracy: " + test_acc)
+                    else:
+                        total_str = ("\rTraining: " + percent_str +
+                        ", training samples processed: " + trained_str +
+                        ", training loss: " + train_acc + 
+                        ", testing loss: " + test_acc)
+                    sys.stdout.write(total_str)
                     sys.stdout.flush()
                     x = self.train_x[batch[i], :]
                     y = self.train_y[batch[i], :]
@@ -515,15 +521,18 @@ for data in [train_x, test_x]:
         data[i, :] -= mean_img
 
 nn = neural_net(train_x, train_y, test_x, test_y, init_type='random',
-                losstype='acc')
+                losstype='loss')
 
-nn.add_layer(fully_connected_layer((64, 28*28), ReLU, ReLU_prime))
+nn.add_layer(fully_connected_layer((512, 28*28), ReLU, ReLU_prime))
+nn.add_layer(fully_connected_layer((256, 512), ReLU, ReLU_prime))
+nn.add_layer(fully_connected_layer((128, 256), ReLU, ReLU_prime))
+nn.add_layer(fully_connected_layer((64, 128), ReLU, ReLU_prime))
 nn.add_layer(fully_connected_layer((64, 64), ReLU, ReLU_prime))
 nn.add_layer(fully_connected_layer((32, 64), ReLU, ReLU_prime))
 nn.add_layer(fully_connected_layer((16, 32), ReLU, ReLU_prime))
 nn.add_layer(fully_connected_layer((10, 16), softmax, None))
    
-nn.train(epochs=10, batch_size=32, lr=1e-3)
+nn.train(epochs=4, batch_size=32, lr=1e-3)
 nn.plot()
 
 def classify(nn, imgpath=None, img=None):
