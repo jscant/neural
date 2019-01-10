@@ -1,2 +1,2 @@
 # neural
-Manual implementation of deep neural network
+Manual implementation of deep neural network  
